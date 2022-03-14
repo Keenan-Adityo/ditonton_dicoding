@@ -1,0 +1,22 @@
+part of 'search_bloc.dart';
+
+@immutable
+abstract class SearchEvent extends Equatable {
+  const SearchEvent();
+ 
+  @override
+  List<Object> get props => [];
+}
+
+class OnQueryChanged extends SearchEvent {
+  final String query;
+ 
+  OnQueryChanged(this.query);
+ 
+  @override
+  List<Object> get props => [query];
+}
+
+EventTransformer<T> debounce<T>(Duration duration) {
+  return (events, mapper) => events.debounceTime(duration).flatMap(mapper);
+}

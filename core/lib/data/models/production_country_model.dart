@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
 class ProductionCountryModel extends Equatable {
-  ProductionCountryModel({
+  const ProductionCountryModel({
     required this.iso31661,
     required this.name,
   });
 
-  String? iso31661;
-  String? name;
+  final String? iso31661;
+  final String? name;
 
   factory ProductionCountryModel.fromJson(Map<String, dynamic> json) => ProductionCountryModel(
         iso31661: json["iso_3166_1"],

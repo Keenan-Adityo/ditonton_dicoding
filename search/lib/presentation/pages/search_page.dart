@@ -8,17 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:search/presentation/bloc/search_bloc.dart';
-import 'package:search/presentation/provider/movie_search_notifier.dart';
 import 'package:search/presentation/provider/tv_search_notifier.dart';
 
 class SearchPage extends StatelessWidget {
-  static const ROUTE_NAME = '/search';
+  static const routeName = '/search';
+
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,7 +32,7 @@ class SearchPage extends StatelessWidget {
                   onChanged: (query) {
                     context.read<SearchBloc>().add(OnQueryChanged(query));
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Search title',
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(),
@@ -44,7 +45,7 @@ class SearchPage extends StatelessWidget {
                     Provider.of<TVSearchNotifier>(context, listen: false)
                         .fetchTVSearch(query);
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Search title',
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(),
@@ -53,7 +54,7 @@ class SearchPage extends StatelessWidget {
                 );
               }
             }),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Consumer<SwitchNotifier>(
               builder: (context, data, child) {
                 if (data.data == 'movie') {
@@ -105,7 +106,7 @@ class SearchPage extends StatelessWidget {
                 }
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Search Result',
               style: kHeading6,
@@ -116,7 +117,7 @@ class SearchPage extends StatelessWidget {
                   return BlocBuilder<SearchBloc, SearchState>(
                     builder: (context, state) {
                       if (state is SearchLoading) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       } else if (state is SearchHasData) {
@@ -147,11 +148,11 @@ class SearchPage extends StatelessWidget {
                 } else {
                   return Consumer<TVSearchNotifier>(
                     builder: (context, data, child) {
-                      if (data.state == RequestState.Loading) {
-                        return Center(
+                      if (data.state == RequestState.loading) {
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
-                      } else if (data.state == RequestState.Loaded) {
+                      } else if (data.state == RequestState.loaded) {
                         final result = data.searchResult;
                         return Expanded(
                           child: ListView.builder(

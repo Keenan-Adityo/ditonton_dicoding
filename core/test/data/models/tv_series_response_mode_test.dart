@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../json_reader.dart';
 
 void main() {
-  final tTVSeriesModel = TVSeriesModel(
+  const tTVSeriesModel = TVSeriesModel(
     backdropPath: 'backdropPath',
     firstAirDate: null,
     genreIds: [1, 2, 3],
@@ -23,7 +23,7 @@ void main() {
     voteCount: 1,
   );
 
-  final tTVSeriesResponseModel =
+  const tTVSeriesResponseModel =
       TVSeriesResponse(tvSeriesList: <TVSeriesModel>[tTVSeriesModel]);
 
   group(

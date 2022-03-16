@@ -17,7 +17,7 @@ void main() {
     },
   );
 
-  final tID = 1;
+  const tID = 1;
 
   test(
     'Should return tv series detail from repository',

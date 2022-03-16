@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PopularTVPage extends StatefulWidget {
-  static const ROUTE_NAME = '/popular-tv';
+  static const routeName = '/popular-tv';
+
+  const PopularTVPage({Key? key}) : super(key: key);
 
   @override
   _PopularTVPageState createState() => _PopularTVPageState();
@@ -24,17 +26,17 @@ class _PopularTVPageState extends State<PopularTVPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Popular TV Series'),
+        title: const Text('Popular TV Series'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Consumer<PopularTVNotifier>(
           builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
-              return Center(
+            if (data.state == RequestState.loading) {
+              return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (data.state == RequestState.loaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final movie = data.tv[index];
@@ -44,7 +46,7 @@ class _PopularTVPageState extends State<PopularTVPage> {
               );
             } else {
               return Center(
-                key: Key('error_message'),
+                key: const Key('error_message'),
                 child: Text(data.message),
               );
             }

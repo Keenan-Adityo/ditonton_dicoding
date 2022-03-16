@@ -9,7 +9,7 @@ import 'package:core/domain/entities/tv_series_detail.dart';
 import 'package:equatable/equatable.dart';
 
 class TVSeriesDetailResponse extends Equatable {
-  TVSeriesDetailResponse({
+  const TVSeriesDetailResponse({
     required this.adult,
     required this.backdropPath,
     required this.createdBy,
@@ -44,38 +44,38 @@ class TVSeriesDetailResponse extends Equatable {
     required this.voteCount,
   });
 
-  bool adult;
-  String? backdropPath;
-  List<dynamic> createdBy;
-  List<int> episodeRunTime;
-  String firstAirDate;
-  List<GenreModel> genres;
-  String homepage;
-  int id;
-  bool inProduction;
-  List<String> languages;
-  String? lastAirDate;
-  LastEpisodeToAirModel lastEpisodeToAir;
-  String name;
-  dynamic nextEpisodeToAir;
-  List<NetworkModel> networks;
-  int numberOfEpisodes;
-  int numberOfSeasons;
-  List<String> originCountry;
-  String originalLanguage;
-  String originalName;
-  String overview;
-  double popularity;
-  String posterPath;
-  List<dynamic> productionCompanies;
-  List<ProductionCountryModel> productionCountries;
-  List<SeasonModel> seasons;
-  List<SpokenLanguageModel> spokenLanguages;
-  String status;
-  String tagline;
-  String type;
-  double voteAverage;
-  int voteCount;
+  final bool adult;
+  final String? backdropPath;
+  final List<dynamic> createdBy;
+  final List<int> episodeRunTime;
+  final String firstAirDate;
+  final List<GenreModel> genres;
+  final String homepage;
+  final int id;
+  final bool inProduction;
+  final List<String> languages;
+  final String? lastAirDate;
+  final LastEpisodeToAirModel lastEpisodeToAir;
+  final String name;
+  final dynamic nextEpisodeToAir;
+  final List<NetworkModel> networks;
+  final int numberOfEpisodes;
+  final int numberOfSeasons;
+  final List<String> originCountry;
+  final String originalLanguage;
+  final String originalName;
+  final String overview;
+  final double popularity;
+  final String posterPath;
+  final List<dynamic> productionCompanies;
+  final List<ProductionCountryModel> productionCountries;
+  final List<SeasonModel> seasons;
+  final List<SpokenLanguageModel> spokenLanguages;
+  final String status;
+  final String tagline;
+  final String type;
+  final double voteAverage;
+  final int voteCount;
 
   factory TVSeriesDetailResponse.fromJson(Map<String, dynamic> json) =>
       TVSeriesDetailResponse(
@@ -165,7 +165,7 @@ class TVSeriesDetailResponse extends Equatable {
       backdropPath: backdropPath,
       episodeRunTime: episodeRunTime,
       firstAirDate: firstAirDate,
-      genres: this.genres.map((genre) => genre.toEntity()).toList(),
+      genres: genres.map((genre) => genre.toEntity()).toList(),
       homepage: homepage,
       id: id,
       languages: languages,
@@ -176,7 +176,7 @@ class TVSeriesDetailResponse extends Equatable {
       originalName: originalName,
       overview: overview,
       posterPath: posterPath,
-      seasons: this.seasons.map((season) => season.toEntity()).toList(),
+      seasons: seasons.map((season) => season.toEntity()).toList(),
       status: status,
       voteAverage: voteAverage,
       voteCount: voteCount,

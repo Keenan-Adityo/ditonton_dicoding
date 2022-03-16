@@ -5,17 +5,18 @@ class SwitchCard extends StatelessWidget {
   final TextStyle style;
   final Color color;
   const SwitchCard({
+    Key? key,
     required this.name,
     required this.style,
     required this.color,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(left: 12),
-      padding: EdgeInsets.symmetric(
+      margin: const EdgeInsets.only(left: 12),
+      padding: const EdgeInsets.symmetric(
         horizontal: 12,
         vertical: 12 / 4,
       ),

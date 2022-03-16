@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
 
 class NetworkModel extends Equatable {
-  NetworkModel({
+  const NetworkModel({
     required this.name,
     required this.id,
     required this.logoPath,
     required this.originCountry,
   });
 
-  String? name;
-  int? id;
-  String? logoPath;
-  String? originCountry;
+  final String? name;
+  final int? id;
+  final String? logoPath;
+  final String? originCountry;
 
   factory NetworkModel.fromJson(Map<String, dynamic> json) => NetworkModel(
         name: json["name"],

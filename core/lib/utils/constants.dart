@@ -1,5 +1,5 @@
 
-const String BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+const String baseImageURL = 'https://image.tmdb.org/t/p/w500';
 
 
 

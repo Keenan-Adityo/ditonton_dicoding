@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 class SpokenLanguageModel extends Equatable {
-  SpokenLanguageModel({
+  const SpokenLanguageModel({
     required this.englishName,
     required this.iso6391,
     required this.name,
   });
 
-  String? englishName;
-  String? iso6391;
-  String? name;
+  final String? englishName;
+  final String? iso6391;
+  final String? name;
 
   factory SpokenLanguageModel.fromJson(Map<String, dynamic> json) => SpokenLanguageModel(
         englishName: json["english_name"],

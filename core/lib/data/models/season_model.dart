@@ -2,7 +2,7 @@ import 'package:core/domain/entities/season.dart';
 import 'package:equatable/equatable.dart';
 
 class SeasonModel extends Equatable {
-  SeasonModel({
+  const SeasonModel({
     required this.airDate,
     required this.episodeCount,
     required this.id,
@@ -12,13 +12,13 @@ class SeasonModel extends Equatable {
     required this.seasonNumber,
   });
 
-  String? airDate;
-  int episodeCount;
-  int id;
-  String name;
-  String overview;
-  dynamic posterPath;
-  int seasonNumber;
+  final String? airDate;
+  final int episodeCount;
+  final int id;
+  final String name;
+  final String overview;
+  final dynamic posterPath;
+  final int seasonNumber;
 
   factory SeasonModel.fromJson(Map<String, dynamic> json) => SeasonModel(
         airDate: json["air_date"],

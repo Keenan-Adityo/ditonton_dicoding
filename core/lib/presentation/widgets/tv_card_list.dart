@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class TVCard extends StatelessWidget {
   final TVSeries tv;
 
-  TVCard(this.tv);
+  const TVCard(this.tv, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class TVCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(
             context,
-            TVDetailPage.ROUTE_NAME,
+            TVDetailPage.routeName,
             arguments: tv.id,
           );
         },
@@ -41,7 +41,7 @@ class TVCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: kHeading6,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       tv.overview ?? '-',
                       maxLines: 2,
@@ -58,14 +58,14 @@ class TVCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 child: CachedNetworkImage(
-                  imageUrl: '$BASE_IMAGE_URL${tv.posterPath}',
+                  imageUrl: '$baseImageURL${tv.posterPath}',
                   width: 80,
-                  placeholder: (context, url) => Center(
+                  placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
               ),
             ),
           ],

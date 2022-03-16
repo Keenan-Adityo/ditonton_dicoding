@@ -1,4 +1,3 @@
-
 import 'package:about/about.dart';
 import 'package:core/presentation/pages/home_movie_page.dart';
 import 'package:core/presentation/pages/movie_detail_page.dart';
@@ -29,13 +28,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:ditonton/injection.dart' as di;
 import 'package:search/presentation/bloc/search_bloc.dart';
-import 'package:search/presentation/provider/movie_search_notifier.dart';
 import 'package:search/presentation/provider/tv_search_notifier.dart';
 import 'package:search/search.dart';
+import 'package:core/common/sslpinning.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await HttpSSLPinning.init();
   di.init();
   runApp(MyApp());
 }
@@ -85,8 +85,8 @@ class MyApp extends StatelessWidget {
           create: (_) => di.locator<WatchlistTVNotifier>(),
         ),
         BlocProvider(
-      create: (_) => di.locator<SearchBloc>(),
-    ),
+          create: (_) => di.locator<SearchBloc>(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -102,31 +102,31 @@ class MyApp extends StatelessWidget {
           switch (settings.name) {
             case '/home':
               return MaterialPageRoute(builder: (_) => HomeMoviePage());
-            case PopularMoviesPage.ROUTE_NAME:
+            case PopularMoviesPage.routeName:
               return CupertinoPageRoute(builder: (_) => PopularMoviesPage());
-            case PopularTVPage.ROUTE_NAME:
+            case PopularTVPage.routeName:
               return CupertinoPageRoute(builder: (_) => PopularTVPage());
-            case TopRatedMoviesPage.ROUTE_NAME:
+            case TopRatedMoviesPage.routeName:
               return CupertinoPageRoute(builder: (_) => TopRatedMoviesPage());
-            case TopRatedTVPage.ROUTE_NAME:
+            case TopRatedTVPage.routeName:
               return CupertinoPageRoute(builder: (_) => TopRatedTVPage());
-            case MovieDetailPage.ROUTE_NAME:
+            case MovieDetailPage.routeName:
               final id = settings.arguments as int;
               return MaterialPageRoute(
                 builder: (_) => MovieDetailPage(id: id),
                 settings: settings,
               );
-              case TVDetailPage.ROUTE_NAME:
+            case TVDetailPage.routeName:
               final id = settings.arguments as int;
               return MaterialPageRoute(
                 builder: (_) => TVDetailPage(id: id),
                 settings: settings,
               );
-            case SearchPage.ROUTE_NAME:
+            case SearchPage.routeName:
               return CupertinoPageRoute(builder: (_) => SearchPage());
-            case WatchlistMoviesPage.ROUTE_NAME:
+            case WatchlistMoviesPage.routeName:
               return MaterialPageRoute(builder: (_) => WatchlistMoviesPage());
-            case AboutPage.ROUTE_NAME:
+            case AboutPage.routeName:
               return MaterialPageRoute(builder: (_) => AboutPage());
             default:
               return MaterialPageRoute(builder: (_) {

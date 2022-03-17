@@ -20,7 +20,7 @@ void main() {
 
   setUp(() {
     mockHttpClient = MockHttpClient();
-    dataSource = MovieRemoteDataSourceImpl(client: mockHttpClient);
+    dataSource = MovieRemoteDataSourceImpl();
   });
 
   group('get Now Playing Movies', () {
@@ -31,8 +31,7 @@ void main() {
     test('should return list of Movie Model when the response code is 200',
         () async {
       // arrange
-      when(mockHttpClient
-              .get(Uri.parse('$baseURL/movie/now_playing?$apiKey')))
+      when(mockHttpClient.get(Uri.parse('$baseURL/movie/now_playing?$apiKey')))
           .thenAnswer((_) async =>
               http.Response(readJson('dummy_data/now_playing.json'), 200));
       // act
@@ -46,8 +45,7 @@ void main() {
         'should throw a ServerException when the response code is 404 or other',
         () async {
       // arrange
-      when(mockHttpClient
-              .get(Uri.parse('$baseURL/movie/now_playing?$apiKey')))
+      when(mockHttpClient.get(Uri.parse('$baseURL/movie/now_playing?$apiKey')))
           .thenAnswer((_) async => http.Response('Not Found', 404));
       // act
       final call = dataSource.getNowPlayingMovies();

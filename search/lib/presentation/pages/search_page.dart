@@ -1,4 +1,4 @@
-import 'package:core/presentation/provider/switch_notifier.dart';
+import 'package:core/presentation/bloc/switch/switch_bloc.dart';
 import 'package:core/presentation/widgets/movie_card_list.dart';
 import 'package:core/presentation/widgets/switch_catd.dart';
 import 'package:core/presentation/widgets/tv_card_list.dart';
@@ -6,7 +6,6 @@ import 'package:core/styles/text_styles.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:search/presentation/bloc/search_movie/search_bloc.dart';
 import 'package:search/presentation/bloc/search_tv/searchtv_bloc.dart';
 
@@ -26,37 +25,39 @@ class SearchPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<SwitchNotifier>(builder: (context, data, child) {
-              if (data.data == 'movie') {
-                return TextField(
-                  onChanged: (query) {
-                    context.read<SearchBloc>().add(OnQueryChanged(query));
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Search title',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                  ),
-                  textInputAction: TextInputAction.search,
-                );
-              } else {
-                return TextField(
-                  onChanged: (query) {
-                    context.read<SearchTVBloc>().add(OnQueryChangedTV(query));
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Search title',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                  ),
-                  textInputAction: TextInputAction.search,
-                );
-              }
-            }),
+            BlocBuilder<SwitchBloc, SwitchState>(
+              builder: (context, state) {
+                if (state is SwitchMovie) {
+                  return TextField(
+                    onChanged: (query) {
+                      context.read<SearchBloc>().add(OnQueryChanged(query));
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search title',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    textInputAction: TextInputAction.search,
+                  );
+                } else {
+                  return TextField(
+                    onChanged: (query) {
+                      context.read<SearchTVBloc>().add(OnQueryChangedTV(query));
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search title',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    textInputAction: TextInputAction.search,
+                  );
+                }
+              },
+            ),
             const SizedBox(height: 16),
-            Consumer<SwitchNotifier>(
-              builder: (context, data, child) {
-                if (data.data == 'movie') {
+            BlocBuilder<SwitchBloc, SwitchState>(
+              builder: (context, state) {
+                if (state is SwitchMovie) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,8 +74,8 @@ class SearchPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onTap: () {
-                          Provider.of<SwitchNotifier>(context, listen: false)
-                              .changeTV();
+                          BlocProvider.of<SwitchBloc>(context)
+                              .add(const OnChanged('tv'));
                         },
                       ),
                     ],
@@ -91,8 +92,8 @@ class SearchPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onTap: () {
-                          Provider.of<SwitchNotifier>(context, listen: false)
-                              .changeMovie();
+                          BlocProvider.of<SwitchBloc>(context)
+                              .add(const OnChanged('movie'));
                         },
                       ),
                       SwitchCard(
@@ -110,9 +111,9 @@ class SearchPage extends StatelessWidget {
               'Search Result',
               style: kHeading6,
             ),
-            Consumer<SwitchNotifier>(
-              builder: (context, value, child) {
-                if (value.data == 'movie') {
+            BlocBuilder<SwitchBloc, SwitchState>(
+              builder: (context, state) {
+                if (state is SwitchMovie) {
                   return BlocBuilder<SearchBloc, SearchState>(
                     builder: (context, state) {
                       if (state is SearchLoading) {

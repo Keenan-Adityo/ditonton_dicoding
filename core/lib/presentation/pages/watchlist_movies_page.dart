@@ -1,14 +1,13 @@
-import 'package:core/presentation/provider/switch_notifier.dart';
-import 'package:core/presentation/provider/watchlist_movie_notifier.dart';
-import 'package:core/presentation/provider/watchlist_tv_notifier.dart';
+import 'package:core/presentation/bloc/switch/switch_bloc.dart';
+import 'package:core/presentation/bloc/watchlist_movie/watchlist_movie_bloc.dart';
+import 'package:core/presentation/bloc/watchlist_tv/watchlist_tv_bloc.dart';
 import 'package:core/presentation/widgets/movie_card_list.dart';
 import 'package:core/presentation/widgets/switch_catd.dart';
 import 'package:core/presentation/widgets/tv_card_list.dart';
 import 'package:core/styles/text_styles.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WatchlistMoviesPage extends StatefulWidget {
   static const routeName = '/watchlist-movie';
@@ -25,11 +24,11 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<WatchlistMovieNotifier>(context, listen: false)
-            .fetchWatchlistMovies());
+        BlocProvider.of<WatchlistMovieBloc>(context, listen: false)
+            .add(OnFetchWatchlistMovie()));
     Future.microtask(() =>
-        Provider.of<WatchlistTVNotifier>(context, listen: false)
-            .fetchWatchlistTV());
+        BlocProvider.of<WatchlistTvBloc>(context, listen: false)
+            .add(OnFetchWatchlistTv()));
   }
 
   @override
@@ -40,9 +39,10 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
 
   @override
   void didPopNext() {
-    Provider.of<WatchlistMovieNotifier>(context, listen: false)
-        .fetchWatchlistMovies();
-    Provider.of<WatchlistTVNotifier>(context, listen: false).fetchWatchlistTV();
+    BlocProvider.of<WatchlistMovieBloc>(context, listen: false)
+        .add(OnFetchWatchlistMovie());
+    BlocProvider.of<WatchlistTvBloc>(context, listen: false)
+        .add(OnFetchWatchlistTv());
   }
 
   @override
@@ -56,9 +56,9 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<SwitchNotifier>(
-              builder: (context, data, child) {
-                if (data.data == 'movie') {
+            BlocBuilder<SwitchBloc, SwitchState>(
+              builder: (context, state) {
+                if (state is SwitchMovie) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,8 +75,8 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
                           color: Colors.white,
                         ),
                         onTap: () {
-                          Provider.of<SwitchNotifier>(context, listen: false)
-                              .changeTV();
+                          BlocProvider.of<SwitchBloc>(context)
+                              .add(const OnChanged('tv'));
                         },
                       ),
                     ],
@@ -93,8 +93,8 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
                           color: Colors.white,
                         ),
                         onTap: () {
-                          Provider.of<SwitchNotifier>(context, listen: false)
-                              .changeMovie();
+                          BlocProvider.of<SwitchBloc>(context)
+                              .add(const OnChanged('movie'));
                         },
                       ),
                       SwitchCard(
@@ -108,51 +108,55 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
               },
             ),
             Expanded(
-              child: Consumer<SwitchNotifier>(
-                builder: (context, value, child) {
-                  if (value.data == 'movie') {
-                    return Consumer<WatchlistMovieNotifier>(
-                      builder: (context, data, child) {
-                        if (data.watchlistState == RequestState.loading) {
+              child: BlocBuilder<SwitchBloc, SwitchState>(
+                builder: (context, state) {
+                  if (state is SwitchMovie) {
+                    return BlocBuilder<WatchlistMovieBloc, WatchlistMovieState>(
+                      builder: (context, state) {
+                        if (state is WatchlistMovieLoading) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (data.watchlistState == RequestState.loaded) {
+                        } else if (state is WatchlistMovieHasData) {
                           return ListView.builder(
                             itemBuilder: (context, index) {
-                              final movie = data.watchlistMovies[index];
+                              final movie = state.result[index];
                               return MovieCard(movie);
                             },
-                            itemCount: data.watchlistMovies.length,
+                            itemCount: state.result.length,
                           );
-                        } else {
+                        } else if (state is WatchlistMovieError) {
                           return Center(
                             key: const Key('error_message'),
-                            child: Text(data.message),
+                            child: Text(state.message),
                           );
+                        } else {
+                          return Container();
                         }
                       },
                     );
                   } else {
-                    return Consumer<WatchlistTVNotifier>(
-                      builder: (context, data, child) {
-                        if (data.watchlistState == RequestState.loading) {
+                    return BlocBuilder<WatchlistTvBloc, WatchlistTvState>(
+                      builder: (context, state) {
+                        if (state is WatchlistTvLoading) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (data.watchlistState == RequestState.loaded) {
+                        } else if (state is WatchlistTvHasData) {
                           return ListView.builder(
                             itemBuilder: (context, index) {
-                              final tv = data.watchlistTV[index];
+                              final tv = state.result[index];
                               return TVCard(tv);
                             },
-                            itemCount: data.watchlistTV.length,
+                            itemCount: state.result.length,
                           );
-                        } else {
+                        } else if (state is WatchlistTvError) {
                           return Center(
                             key: const Key('error_message'),
-                            child: Text(data.message),
+                            child: Text(state.message),
                           );
+                        } else {
+                          return Container();
                         }
                       },
                     );

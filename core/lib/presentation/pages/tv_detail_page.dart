@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/domain/entities/genre.dart';
 import 'package:core/domain/entities/tv_series.dart';
 import 'package:core/domain/entities/tv_series_detail.dart';
-import 'package:core/presentation/provider/tv_detail_notifier.dart';
+import 'package:core/presentation/bloc/tv_bloc/tv_detail_bloc.dart';
 import 'package:core/styles/colors.dart';
 import 'package:core/styles/text_styles.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:provider/provider.dart';
 
 class TVDetailPage extends StatefulWidget {
   static const routeName = '/detailtv';
@@ -25,9 +24,9 @@ class _TVDetailPageState extends State<TVDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      Provider.of<TVDetailNotifier>(context, listen: false)
-          .fetchTVDetail(widget.id);
-      Provider.of<TVDetailNotifier>(context, listen: false)
+      BlocProvider.of<TvDetailBloc>(context, listen: false)
+          .add(OnFetchTvDetail(widget.id));
+      BlocProvider.of<TvDetailBloc>(context, listen: false)
           .loadWatchlistStatus(widget.id);
     });
   }
@@ -35,23 +34,25 @@ class _TVDetailPageState extends State<TVDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<TVDetailNotifier>(
-        builder: (context, provider, child) {
-          if (provider.tvState == RequestState.loading) {
+      body: BlocBuilder<TvDetailBloc, TvDetailState>(
+        builder: (context, state) {
+          if (state is TvDetailLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (provider.tvState == RequestState.loaded) {
-            final tv = provider.tv;
+          } else if (state is TvDetailHasData) {
+            final tv = state.result;
             return SafeArea(
               child: TVDetailContent(
                 tv,
-                provider.tvRecommendations,
-                provider.isAddedToWatchlist,
+                state.recommendationResult,
+                state.isAddedToWatchlist,
               ),
             );
+          } else if (state is TvDetailError) {
+            return Text(state.message);
           } else {
-            return Text(provider.message);
+            return Container();
           }
         },
       ),
@@ -64,7 +65,9 @@ class TVDetailContent extends StatelessWidget {
   final List<TVSeries> recommendations;
   final bool isAddedWatchlist;
 
-  const TVDetailContent(this.tv, this.recommendations, this.isAddedWatchlist, {Key? key}) : super(key: key);
+  const TVDetailContent(this.tv, this.recommendations, this.isAddedWatchlist,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -107,27 +110,27 @@ class TVDetailContent extends StatelessWidget {
                               style: kHeading5,
                             ),
                             ElevatedButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 if (!isAddedWatchlist) {
-                                  await Provider.of<TVDetailNotifier>(context,
+                                  BlocProvider.of<TvDetailBloc>(context,
                                           listen: false)
-                                      .addWatchlist(tv);
+                                      .add(OnAddWatchlist(tv));
                                 } else {
-                                  await Provider.of<TVDetailNotifier>(context,
+                                  BlocProvider.of<TvDetailBloc>(context,
                                           listen: false)
-                                      .removeFromWatchlist(tv);
+                                      .add(OnRemoveWatchlist(tv));
                                 }
 
-                                final message = Provider.of<TVDetailNotifier>(
+                                final message = BlocProvider.of<TvDetailBloc>(
                                         context,
                                         listen: false)
                                     .watchlistMessage;
 
                                 if (message ==
-                                        TVDetailNotifier
+                                        TvDetailBloc
                                             .watchlistAddSuccessMessage ||
                                     message ==
-                                        TVDetailNotifier
+                                        TvDetailBloc
                                             .watchlistRemoveSuccessMessage) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(message)));
@@ -184,60 +187,63 @@ class TVDetailContent extends StatelessWidget {
                               'Recommendations',
                               style: kHeading6,
                             ),
-                            Consumer<TVDetailNotifier>(
-                              builder: (context, data, child) {
-                                if (data.recommendationState ==
-                                    RequestState.loading) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (data.recommendationState ==
-                                    RequestState.error) {
-                                  return Text(data.message);
-                                } else if (data.recommendationState ==
-                                    RequestState.loaded) {
-                                  return SizedBox(
-                                    height: 150,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        final tv = recommendations[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.pushReplacementNamed(
-                                                context,
-                                                TVDetailPage.routeName,
-                                                arguments: tv.id,
-                                              );
-                                            },
-                                            child: ClipRRect(
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(8),
-                                              ),
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    'https://image.tmdb.org/t/p/w500${tv.posterPath}',
-                                                placeholder: (context, url) =>
-                                                    const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                ),
-                                                errorWidget:
-                                                    (context, url, error) =>
+                            BlocBuilder<TvDetailBloc, TvDetailState>(
+                              builder: (context, state) {
+                                
+                                    if (state is TvDetailLoading) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (state is TvDetailError) {
+                                      return Text(state.message);
+                                    } else if (state is TvDetailHasData) {
+                                      return SizedBox(
+                                        height: 150,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            final tv = recommendations[index];
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                    context,
+                                                    TVDetailPage.routeName,
+                                                    arguments: tv.id,
+                                                  );
+                                                },
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(8),
+                                                  ),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        'https://image.tmdb.org/t/p/w500${tv.posterPath}',
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                    errorWidget: (context, url,
+                                                            error) =>
                                                         const Icon(Icons.error),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      itemCount: recommendations.length,
-                                    ),
-                                  );
-                                } else {
-                                  return Container();
-                                }
+                                            );
+                                          },
+                                          itemCount: recommendations.length,
+                                        ),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                 
                               },
                             ),
                           ],

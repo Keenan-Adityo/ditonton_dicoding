@@ -1,26 +1,25 @@
 import 'package:core/domain/entities/tv_series.dart';
+import 'package:core/presentation/bloc/top_rated_tv/top_rated_tv_bloc.dart';
 import 'package:core/presentation/pages/top_rated_tv_page.dart';
-import 'package:core/presentation/provider/top_rated_tv_notifier.dart';
-import 'package:core/utils/state_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 
 import 'top_rated_tv_page_test.mocks.dart';
 
-@GenerateMocks([TopRatedTVNotifier])
+@GenerateMocks([TopRatedTvBloc])
 void main() {
-  late MockTopRatedTVNotifier mockNotifier;
+  late MockTopRatedTvBloc mockBloc;
 
   setUp(() {
-    mockNotifier = MockTopRatedTVNotifier();
+    mockBloc = MockTopRatedTvBloc();
   });
 
   Widget _makeTestableWidget(Widget body) {
-    return ChangeNotifierProvider<TopRatedTVNotifier>.value(
-      value: mockNotifier,
+    return BlocProvider<TopRatedTvBloc>.value(
+      value: mockBloc,
       child: MaterialApp(
         home: body,
       ),
@@ -29,7 +28,8 @@ void main() {
 
   testWidgets('Page should display progress bar when loading',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.loading);
+    when(mockBloc.stream).thenAnswer((_) => Stream.value(TopRatedTvLoading()));
+    when(mockBloc.state).thenReturn(TopRatedTvLoading());
 
     final progressFinder = find.byType(CircularProgressIndicator);
     final centerFinder = find.byType(Center);
@@ -42,8 +42,10 @@ void main() {
 
   testWidgets('Page should display when data is loaded',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.loaded);
-    when(mockNotifier.tv).thenReturn(<TVSeries>[]);
+    final tvList = <TVSeries>[];
+    when(mockBloc.stream)
+        .thenAnswer((_) => Stream.value(TopRatedTvHasData(tvList)));
+    when(mockBloc.state).thenReturn(TopRatedTvHasData(tvList));
 
     final listViewFinder = find.byType(ListView);
 
@@ -54,8 +56,9 @@ void main() {
 
   testWidgets('Page should display text with message when Error',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.error);
-    when(mockNotifier.message).thenReturn('Error message');
+    when(mockBloc.stream)
+        .thenAnswer((_) => Stream.value(const TopRatedTvError('Error Message')));
+    when(mockBloc.state).thenReturn(const TopRatedTvError('Error Message'));
 
     final textFinder = find.byKey(const Key('error_message'));
 

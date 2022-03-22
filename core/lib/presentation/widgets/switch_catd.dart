@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SwitchCard extends StatelessWidget {
-  final name;
+  final String name;
   final TextStyle style;
   final Color color;
   const SwitchCard({

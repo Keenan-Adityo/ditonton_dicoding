@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:core/domain/entities/tv_series.dart';
 import 'package:core/domain/usecases/get_on_air_tv.dart';
-import 'package:core/domain/usecases/get_popular_tv.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 

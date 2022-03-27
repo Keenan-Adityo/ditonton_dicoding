@@ -73,13 +73,13 @@ void main() {
       'Should emit [tvListLoading, tvListError] when get Failure',
       build: () {
         when(mockGetOnAirTv.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return onAirTvListBloc;
       },
       act: (bloc) => bloc.add(OnFetchTVList()),
       expect: () => [
         TvListLoading(),
-        TvListError('Failed'),
+        const TvListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetOnAirTv.execute());
@@ -113,13 +113,13 @@ void main() {
       'Should emit [TvListLoading, TvListError] when get Failure',
       build: () {
         when(mockGetPopularTV.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return popularTvListBloc;
       },
       act: (bloc) => bloc.add(OnFetchTVList()),
       expect: () => [
         TvListLoading(),
-        TvListError('Failed'),
+        const TvListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetPopularTV.execute());
@@ -153,13 +153,13 @@ void main() {
       'Should emit [TvListLoading, TvListError] when get Failure',
       build: () {
         when(mockGetTopRatedTV.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return topRatedTvListBloc;
       },
       act: (bloc) => bloc.add(OnFetchTVList()),
       expect: () => [
         TvListLoading(),
-        TvListError('Failed'),
+        const TvListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetTopRatedTV.execute());

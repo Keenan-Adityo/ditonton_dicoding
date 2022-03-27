@@ -35,7 +35,7 @@ class TVSeriesModel extends Equatable {
 
   factory TVSeriesModel.fromJson(Map<String, dynamic> json) => TVSeriesModel(
         backdropPath:
-            json["backdrop_path"] == null ? null : json["backdrop_path"],
+            json["backdrop_path"],
         firstAirDate: json["firstAirDate"],
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
@@ -51,7 +51,7 @@ class TVSeriesModel extends Equatable {
       );
 
   Map<String, dynamic> toJson() => {
-        "backdrop_path": backdropPath == null ? null : backdropPath,
+        "backdrop_path": backdropPath,
         "first_air_date": firstAirDate,
         "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
         "id": id,

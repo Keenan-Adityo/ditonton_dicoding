@@ -4,8 +4,6 @@ import 'package:core/domain/entities/genre.dart';
 import 'package:core/domain/entities/tv_series.dart';
 import 'package:core/domain/entities/tv_series_detail.dart';
 import 'package:core/presentation/bloc/tv_detail_bloc/tv_detail_bloc.dart';
-import 'package:core/styles/colors.dart';
-import 'package:core/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

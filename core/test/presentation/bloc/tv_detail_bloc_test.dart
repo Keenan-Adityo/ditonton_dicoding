@@ -50,7 +50,7 @@ void main() {
     },
   );
 
-  final tId = 1;
+  const tId = 1;
   final tvDetailStateInit = TvDetailState.initial();
   final tTVSeries = TVSeries(
     backdropPath: 'backdropPath',
@@ -113,7 +113,7 @@ void main() {
               .thenAnswer((_) async => Right(tTVList));
           return bloc;
         },
-        act: (bloc) => bloc.add(OnFetchTvDetail(tId)),
+        act: (bloc) => bloc.add(const OnFetchTvDetail(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           tvDetailStateInit.copyWith(tvDetailState: RequestState.loading),
@@ -145,7 +145,7 @@ void main() {
               (_) async => const Left(ServerFailure('Server Failure')));
           return bloc;
         },
-        act: (bloc) => bloc.add(OnFetchTvDetail(tId)),
+        act: (bloc) => bloc.add(const OnFetchTvDetail(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           tvDetailStateInit.copyWith(tvDetailState: RequestState.loading),
@@ -171,7 +171,7 @@ void main() {
               .thenAnswer((_) async => true);
           return bloc;
         },
-        act: (bloc) => bloc.add(OnLoadWatchlistStatus(tId)),
+        act: (bloc) => bloc.add(const OnLoadWatchlistStatus(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           tvDetailStateInit.copyWith(isAddedToWatchlist: true),

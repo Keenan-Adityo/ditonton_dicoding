@@ -23,7 +23,7 @@ void main() {
     build: () {
       return bloc;
     },
-    act: (bloc) => bloc.add(OnChanged('tv')),
+    act: (bloc) => bloc.add(const OnChanged('tv')),
     wait: const Duration(milliseconds: 500),
     expect: () => [
       SwitchTV(),
@@ -35,7 +35,7 @@ void main() {
     build: () {
       return bloc;
     },
-    act: (bloc) => bloc.add(OnChanged('movie')),
+    act: (bloc) => bloc.add(const OnChanged('movie')),
     wait: const Duration(milliseconds: 500),
     expect: () => [
       SwitchMovie(),

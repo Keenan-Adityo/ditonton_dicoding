@@ -143,7 +143,7 @@ void main() {
           final result = await repository.getOnAirTV();
           // assert
           verify(mockLocalDataSource.getCachedOnTheAirTVSeries());
-          expect(result, Left(CacheFailure('No Cache')));
+          expect(result, const Left(const CacheFailure('No Cache')));
         });
       });
     },
@@ -218,7 +218,7 @@ void main() {
           final result = await repository.getPopularTV();
           // assert
           verify(mockLocalDataSource.getCachedPopularTVSeries());
-          expect(result, Left(CacheFailure('No Cache')));
+          expect(result, const Left(const CacheFailure('No Cache')));
         });
       });
     },
@@ -293,7 +293,7 @@ void main() {
           final result = await repository.getTopRatedTV();
           // assert
           verify(mockLocalDataSource.getCachedTopRatedTVSeries());
-          expect(result, Left(CacheFailure('No Cache')));
+          expect(result, const Left(const CacheFailure('No Cache')));
         });
       });
     },

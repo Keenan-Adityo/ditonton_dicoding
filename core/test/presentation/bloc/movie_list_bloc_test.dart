@@ -33,7 +33,7 @@ void main() {
   final tMovie = Movie(
     adult: false,
     backdropPath: 'backdropPath',
-    genreIds: [1, 2, 3],
+    genreIds: const [1, 2, 3],
     id: 1,
     originalTitle: 'originalTitle',
     overview: 'overview',
@@ -73,13 +73,13 @@ void main() {
       'Should emit [MovieListLoading, MovieListError] when get Failure',
       build: () {
         when(mockGetNowPlayingMovies.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return nowPlayingMovieListBloc;
       },
       act: (bloc) => bloc.add(OnFetchMovieList()),
       expect: () => [
         MovieListLoading(),
-        MovieListError('Failed'),
+        const MovieListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetNowPlayingMovies.execute());
@@ -113,13 +113,13 @@ void main() {
       'Should emit [MovieListLoading, MovieListError] when get Failure',
       build: () {
         when(mockGetPopularMovies.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return popularMovieListBloc;
       },
       act: (bloc) => bloc.add(OnFetchMovieList()),
       expect: () => [
         MovieListLoading(),
-        MovieListError('Failed'),
+        const MovieListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetPopularMovies.execute());
@@ -153,13 +153,13 @@ void main() {
       'Should emit [MovieListLoading, MovieListError] when get Failure',
       build: () {
         when(mockGetTopRatedMovies.execute())
-            .thenAnswer((_) async => Left(ServerFailure('Failed')));
+            .thenAnswer((_) async => const Left(ServerFailure('Failed')));
         return topRatedMovieListBloc;
       },
       act: (bloc) => bloc.add(OnFetchMovieList()),
       expect: () => [
         MovieListLoading(),
-        MovieListError('Failed'),
+        const MovieListError('Failed'),
       ],
       verify: (_) {
         verify(mockGetTopRatedMovies.execute());

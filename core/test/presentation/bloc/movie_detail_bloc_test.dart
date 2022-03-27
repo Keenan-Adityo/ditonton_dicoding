@@ -50,12 +50,12 @@ void main() {
     },
   );
 
-  final tId = 1;
+  const tId = 1;
   final movieDetailStateInit = MovieDetailState.initial();
   final tMovie = Movie(
     adult: false,
     backdropPath: 'backdropPath',
-    genreIds: [1, 2, 3],
+    genreIds: const [1, 2, 3],
     id: 1,
     originalTitle: 'originalTitle',
     overview: 'overview',
@@ -96,7 +96,7 @@ void main() {
               .thenAnswer((_) async => Right(tMovies));
           return bloc;
         },
-        act: (bloc) => bloc.add(OnFetchMovieDetail(tId)),
+        act: (bloc) => bloc.add(const OnFetchMovieDetail(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           movieDetailStateInit.copyWith(movieDetailState: RequestState.loading),
@@ -128,7 +128,7 @@ void main() {
               (_) async => const Left(ServerFailure('Server Failure')));
           return bloc;
         },
-        act: (bloc) => bloc.add(OnFetchMovieDetail(tId)),
+        act: (bloc) => bloc.add(const OnFetchMovieDetail(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           movieDetailStateInit.copyWith(movieDetailState: RequestState.loading),
@@ -153,7 +153,7 @@ void main() {
           when(mockGetWatchListStatus.execute(1)).thenAnswer((_) async => true);
           return bloc;
         },
-        act: (bloc) => bloc.add(OnLoadWatchlistStatus(tId)),
+        act: (bloc) => bloc.add(const OnLoadWatchlistStatus(tId)),
         wait: const Duration(milliseconds: 500),
         expect: () => [
           movieDetailStateInit.copyWith(isAddedToWatchlist: true),

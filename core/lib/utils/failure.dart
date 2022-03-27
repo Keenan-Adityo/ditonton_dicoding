@@ -26,5 +26,5 @@ class CommonFailure extends Failure {
 }
 
 class CacheFailure extends Failure {
-  CacheFailure(String message) : super(message);
+  const CacheFailure(String message) : super(message);
 }

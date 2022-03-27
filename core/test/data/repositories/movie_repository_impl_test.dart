@@ -141,7 +141,7 @@ void main() {
         final result = await repository.getNowPlayingMovies();
         // assert
         verify(mockLocalDataSource.getCachedNowPlayingMovies());
-        expect(result, Left(CacheFailure('No Cache')));
+        expect(result, const Left(CacheFailure('No Cache')));
       });
     });
   });
@@ -214,7 +214,7 @@ void main() {
         final result = await repository.getPopularMovies();
         // assert
         verify(mockLocalDataSource.getCachedPopularMovies());
-        expect(result, Left(CacheFailure('No Cache')));
+        expect(result, const Left(CacheFailure('No Cache')));
       });
     });
   });
@@ -286,7 +286,7 @@ void main() {
         final result = await repository.getTopRatedMovies();
         // assert
         verify(mockLocalDataSource.getCachedTopRatedMovies());
-        expect(result, Left(CacheFailure('No Cache')));
+        expect(result, const Left(CacheFailure('No Cache')));
       });
     });
   });

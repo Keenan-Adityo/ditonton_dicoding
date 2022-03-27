@@ -32,7 +32,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       } on SocketException {
         return const Left(
             ConnectionFailure('Failed to connect to the network'));
-      } on TlsException catch (e) {
+      } on TlsException {
         return const Left(CommonFailure('Certificated not valid\n'));
       } catch (e) {
         return Left(CommonFailure(e.toString()));
@@ -58,7 +58,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       } on SocketException {
         return const Left(
             ConnectionFailure('Failed to connect to the network'));
-      } on TlsException catch (e) {
+      } on TlsException {
         return const Left(CommonFailure('Certificated not valid\n'));
       } catch (e) {
         return Left(CommonFailure(e.toString()));
@@ -84,7 +84,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       } on SocketException {
         return const Left(
             ConnectionFailure('Failed to connect to the network'));
-      } on TlsException catch (e) {
+      } on TlsException {
         return const Left(CommonFailure('Certificated not valid\n'));
       } catch (e) {
         return Left(CommonFailure(e.toString()));
@@ -108,7 +108,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
+    } on TlsException {
       return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
@@ -125,7 +125,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
+    } on TlsException {
       return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
@@ -141,7 +141,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
+    } on TlsException {
       return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));

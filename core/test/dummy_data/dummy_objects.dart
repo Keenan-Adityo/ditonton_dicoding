@@ -74,6 +74,55 @@ final testTVSeriesDetail = TVSeriesDetail(
   voteCount: 1,
 );
 
+const testMovieCache = MovieTable(
+  id: 557,
+  overview:
+      'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
+  posterPath: '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
+  title: 'Spider-Man',
+);
+
+const testTVSeriesCache = TVSeriesTable(
+  id: 85552,
+  name: 'Euphoria',
+  posterPath: '/jtnfNzqZwN4E32FGGxx1YZaBWWf.jpg',
+  overview:
+      'A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.',
+);
+
+final testMovieCacheMap = {
+  'id': 557,
+  'overview':
+      'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
+  'posterPath': '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
+  'title': 'Spider-Man',
+};
+
+final testTVSeriesCacheMap = {
+  'id': 85552,
+  'overview':
+      'A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.',
+  'posterPath': '/jtnfNzqZwN4E32FGGxx1YZaBWWf.jpg',
+  'name': 'Euphoria',
+};
+
+final testMovieFromCache = Movie.watchlist(
+  id: 557,
+  overview:
+      'After being bitten by a genetically altered spider, nerdy high school student Peter Parker is endowed with amazing powers to become the Amazing superhero known as Spider-Man.',
+  posterPath: '/rweIrveL43TaxUN0akQEaAXL6x0.jpg',
+  title: 'Spider-Man',
+);
+
+final testTVSeriesFromCache = TVSeries.watchlist(
+  id: 85552,
+  overview:
+      'A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.',
+  posterPath: '/jtnfNzqZwN4E32FGGxx1YZaBWWf.jpg',
+  name: 'Euphoria',
+);
+
+
 final testWatchlistMovie = Movie.watchlist(
   id: 1,
   title: 'title',

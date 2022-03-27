@@ -6,7 +6,7 @@ import 'package:core/presentation/bloc/popular_tv/popular_tv_bloc.dart';
 import 'package:core/presentation/bloc/switch/switch_bloc.dart';
 import 'package:core/presentation/bloc/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:core/presentation/bloc/top_rated_tv/top_rated_tv_bloc.dart';
-import 'package:core/presentation/bloc/tv_bloc/tv_detail_bloc.dart';
+import 'package:core/presentation/bloc/tv_detail_bloc/tv_detail_bloc.dart';
 import 'package:core/presentation/bloc/tv_list/tv_list_bloc.dart';
 import 'package:core/presentation/bloc/watchlist_movie/watchlist_movie_bloc.dart';
 import 'package:core/presentation/bloc/watchlist_tv/watchlist_tv_bloc.dart';
@@ -72,10 +72,22 @@ class MyApp extends StatelessWidget {
           create: (_) => di.locator<WatchlistMovieBloc>(),
         ),
         BlocProvider(
-          create: (_) => di.locator<TvListBloc>(),
+          create: (_) => di.locator<OnAirTvListBloc>(),
         ),
         BlocProvider(
-          create: (_) => di.locator<MovieListBloc>(),
+          create: (_) => di.locator<PopularTvListBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<TopRatedTvListBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<NowPlayingMovieListBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<PopularMovieListBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<TopRatedMovieListBloc>(),
         ),
         BlocProvider(
           create: (_) => di.locator<MovieDetailBloc>(),

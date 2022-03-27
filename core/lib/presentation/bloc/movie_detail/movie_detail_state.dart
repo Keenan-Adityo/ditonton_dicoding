@@ -1,51 +1,64 @@
 part of 'movie_detail_bloc.dart';
 
 @immutable
-abstract class MovieDetailState extends Equatable {
-  const MovieDetailState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class MovieDetailEmpty extends MovieDetailState {}
-
-class MovieDetailLoading extends MovieDetailState {}
-
-class MovieDetailHasData extends MovieDetailState {
-  final MovieDetail result;
+class MovieDetailState extends Equatable {
+  final MovieDetail? movieDetail;
+  final List<Movie> movieRecommendations;
+  final RequestState movieDetailState;
+  final RequestState movieRecommendationState;
+  final String message;
+  final String watchlistMessage;
   final bool isAddedToWatchlist;
-  final List<Movie> recommendationResult;
 
-  const MovieDetailHasData(this.result, this.isAddedToWatchlist, this.recommendationResult);
+  MovieDetailState({
+    required this.movieDetail,
+    required this.movieRecommendations,
+    required this.movieDetailState,
+    required this.movieRecommendationState,
+    required this.message,
+    required this.watchlistMessage,
+    required this.isAddedToWatchlist,
+  });
+
+  MovieDetailState copyWith({
+    MovieDetail? movieDetail,
+    List<Movie>? movieRecommendations,
+    RequestState? movieDetailState,
+    RequestState? movieRecommendationState,
+    String? message,
+    String? watchlistMessage,
+    bool? isAddedToWatchlist,
+  }) {
+    return MovieDetailState(
+      movieDetail: movieDetail ?? this.movieDetail,
+      movieRecommendations: movieRecommendations ?? this.movieRecommendations,
+      movieDetailState: movieDetailState ?? this.movieDetailState,
+      movieRecommendationState: movieRecommendationState ?? this.movieRecommendationState,
+      message: message ?? this.message,
+      watchlistMessage: watchlistMessage ?? this.watchlistMessage,
+      isAddedToWatchlist: isAddedToWatchlist ?? this.isAddedToWatchlist,
+    );
+  }
+
+  factory MovieDetailState.initial() {
+    return MovieDetailState(
+      movieDetail: null,
+      movieRecommendations: [],
+      movieDetailState: RequestState.empty,
+      movieRecommendationState: RequestState.empty,
+      message: '',
+      watchlistMessage: '',
+      isAddedToWatchlist: false,
+    );
+  }
+
   @override
-  List<Object?> get props => [result, isAddedToWatchlist, recommendationResult];
-}
-
-class MovieDetailError extends MovieDetailState {
-  final String message;
-
-  const MovieDetailError(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class MovieDetailRecommendationLoading extends MovieDetailState {}
-
-class MovieDetailRecommendationHasData extends MovieDetailState {
-  final List<Movie> result;
-
-  const MovieDetailRecommendationHasData(this.result);
-  @override
-  List<Object?> get props => [result];
-}
-
-class MovieDetailRecommendationError extends MovieDetailState {
-  final String message;
-
-  const MovieDetailRecommendationError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [
+    movieDetail, 
+    movieRecommendations, 
+    movieDetailState, 
+    movieRecommendationState, 
+    message, watchlistMessage, 
+    isAddedToWatchlist
+  ];
 }

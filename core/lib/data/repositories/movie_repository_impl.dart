@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:core/common/network_info.dart';
 import 'package:core/data/datasources/movie_local_data_source.dart';
 import 'package:core/data/datasources/movie_remote_data_source.dart';
 import 'package:core/data/models/movie_table.dart';
@@ -13,25 +14,37 @@ import 'package:dartz/dartz.dart';
 class MovieRepositoryImpl implements MovieRepository {
   final MovieRemoteDataSource remoteDataSource;
   final MovieLocalDataSource localDataSource;
+  final NetworkInfo networkInfo;
 
   MovieRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
+    required this.networkInfo,
   });
 
   @override
   Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async {
-    try {
-      final result = await remoteDataSource.getNowPlayingMovies();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getNowPlayingMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException {
+        return const Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedNowPlayingMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
@@ -44,8 +57,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return const Left(ServerFailure(''));
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+    } on TlsException {
+      return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }
@@ -61,7 +74,7 @@ class MovieRepositoryImpl implements MovieRepository {
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+      return Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }
@@ -69,33 +82,53 @@ class MovieRepositoryImpl implements MovieRepository {
 
   @override
   Future<Either<Failure, List<Movie>>> getPopularMovies() async {
-    try {
-      final result = await remoteDataSource.getPopularMovies();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getPopularMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException catch (e) {
+        return Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedPopularMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
   @override
   Future<Either<Failure, List<Movie>>> getTopRatedMovies() async {
-    try {
-      final result = await remoteDataSource.getTopRatedMovies();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getTopRatedMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException catch (e) {
+        return Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedTopRatedMovies();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
@@ -109,7 +142,7 @@ class MovieRepositoryImpl implements MovieRepository {
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+      return Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }

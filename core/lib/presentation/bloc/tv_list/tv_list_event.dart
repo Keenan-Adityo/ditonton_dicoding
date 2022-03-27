@@ -8,4 +8,4 @@ abstract class TvListEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class OnFetchOnAirTv extends TvListEvent {}
+class OnFetchTVList extends TvListEvent {}

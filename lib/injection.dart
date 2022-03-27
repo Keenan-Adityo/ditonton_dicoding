@@ -1,3 +1,4 @@
+import 'package:core/common/network_info.dart';
 import 'package:core/common/sslpinning.dart';
 import 'package:core/data/datasources/db/database_helper.dart';
 import 'package:core/data/datasources/movie_local_data_source.dart';
@@ -33,10 +34,11 @@ import 'package:core/presentation/bloc/popular_tv/popular_tv_bloc.dart';
 import 'package:core/presentation/bloc/switch/switch_bloc.dart';
 import 'package:core/presentation/bloc/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:core/presentation/bloc/top_rated_tv/top_rated_tv_bloc.dart';
-import 'package:core/presentation/bloc/tv_bloc/tv_detail_bloc.dart';
+import 'package:core/presentation/bloc/tv_detail_bloc/tv_detail_bloc.dart';
 import 'package:core/presentation/bloc/tv_list/tv_list_bloc.dart';
 import 'package:core/presentation/bloc/watchlist_movie/watchlist_movie_bloc.dart';
 import 'package:core/presentation/bloc/watchlist_tv/watchlist_tv_bloc.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:search/domain/usecases/search_tv.dart';
 import 'package:search/presentation/bloc/search_tv/searchtv_bloc.dart';
 import 'package:search/search.dart';
@@ -90,31 +92,51 @@ void init() {
     ),
   );
   locator.registerFactory(
-    () => TvListBloc(
+    () => OnAirTvListBloc(
       locator(),
     ),
   );
   locator.registerFactory(
-    () => MovieListBloc(
+    () => PopularTvListBloc(
+      locator(),
+    ),
+  );
+  locator.registerFactory(
+    () => TopRatedTvListBloc(
+      locator(),
+    ),
+  );
+  locator.registerFactory(
+    () => NowPlayingMovieListBloc(
+      locator(),
+    ),
+  );
+  locator.registerFactory(
+    () => PopularMovieListBloc(
+      locator(),
+    ),
+  );
+  locator.registerFactory(
+    () => TopRatedMovieListBloc(
       locator(),
     ),
   );
   locator.registerFactory(
     () => MovieDetailBloc(
-      locator(),
-      locator(),
-      locator(),
-      locator(),
-      locator(),
+      getMovieDetail: locator(),
+      getMovieRecommendations: locator(),
+      getWatchListStatus: locator(),
+      removeWatchlist: locator(),
+      saveWatchlist: locator(),
     ),
   );
   locator.registerFactory(
     () => TvDetailBloc(
-      locator(),
-      locator(),
-      locator(),
-      locator(),
-      locator(),
+      getTVDetail: locator(),
+      getTVRecommendations: locator(),
+      getWatchListStatus: locator(),
+      removeWatchlist: locator(),
+      saveWatchlist: locator(),
     ),
   );
 
@@ -146,18 +168,20 @@ void init() {
     () => MovieRepositoryImpl(
       remoteDataSource: locator(),
       localDataSource: locator(),
+      networkInfo: locator(),
     ),
   );
   locator.registerLazySingleton<TVSeriesRepository>(
     () => TVSeriesRepositoryImpl(
       remoteDataSource: locator(),
       localDataSource: locator(),
+      networkInfo: locator(),
     ),
   );
 
   // data sources
   locator.registerLazySingleton<MovieRemoteDataSource>(
-      () => MovieRemoteDataSourceImpl());
+      () => MovieRemoteDataSourceImpl(client: locator(),));
   locator.registerLazySingleton<MovieLocalDataSource>(
       () => MovieLocalDataSourceImpl(databaseHelper: locator()));
   locator.registerLazySingleton<TVSeriesRemoteDataSource>(
@@ -168,6 +192,10 @@ void init() {
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
 
+  // network info
+  locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(locator()));
+
   // external
   locator.registerLazySingleton(() => HttpSSLPinning.client);
+  locator.registerLazySingleton(() => DataConnectionChecker());
 }

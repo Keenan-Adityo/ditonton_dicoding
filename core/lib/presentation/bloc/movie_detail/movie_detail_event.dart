@@ -34,3 +34,12 @@ class OnRemoveWatchlist extends MovieDetailEvent {
   @override
   List<Object?> get props => [movie];
 }
+
+class OnLoadWatchlistStatus extends MovieDetailEvent {
+  final int id;
+
+  const OnLoadWatchlistStatus(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

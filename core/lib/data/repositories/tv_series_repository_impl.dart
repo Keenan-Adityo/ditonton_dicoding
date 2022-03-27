@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:core/common/network_info.dart';
 import 'package:core/data/datasources/tv_series_local_data_source.dart';
 import 'package:core/data/datasources/tv_series_remote_data_source.dart';
 import 'package:core/data/models/tv_series_table.dart';
@@ -13,56 +14,88 @@ import 'package:dartz/dartz.dart';
 class TVSeriesRepositoryImpl implements TVSeriesRepository {
   final TVSeriesRemoteDataSource remoteDataSource;
   final TVSeriesLocalDataSource localDataSource;
+  final NetworkInfo networkInfo;
 
   TVSeriesRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
+    required this.networkInfo,
   });
   @override
   Future<Either<Failure, List<TVSeries>>> getOnAirTV() async {
-    try {
-      final result = await remoteDataSource.getOnAirTV();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getOnAirTV();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException catch (e) {
+        return const Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedOnTheAirTVSeries();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
   @override
   Future<Either<Failure, List<TVSeries>>> getPopularTV() async {
-    try {
-      final result = await remoteDataSource.getPopularTV();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getPopularTV();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException catch (e) {
+        return const Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedPopularTVSeries();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
   @override
   Future<Either<Failure, List<TVSeries>>> getTopRatedTV() async {
-    try {
-      final result = await remoteDataSource.getTopRatedTV();
-      return Right(result.map((model) => model.toEntity()).toList());
-    } on ServerException {
-      return const Left(ServerFailure(''));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
-    } catch (e) {
-      return Left(CommonFailure(e.toString()));
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await remoteDataSource.getTopRatedTV();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on ServerException {
+        return const Left(ServerFailure(''));
+      } on SocketException {
+        return const Left(
+            ConnectionFailure('Failed to connect to the network'));
+      } on TlsException catch (e) {
+        return const Left(CommonFailure('Certificated not valid\n'));
+      } catch (e) {
+        return Left(CommonFailure(e.toString()));
+      }
+    } else {
+      try {
+        final result = await localDataSource.getCachedTopRatedTVSeries();
+        return Right(result.map((model) => model.toEntity()).toList());
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      }
     }
   }
 
@@ -76,7 +109,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+      return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }
@@ -93,7 +126,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+      return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }
@@ -109,7 +142,7 @@ class TVSeriesRepositoryImpl implements TVSeriesRepository {
     } on SocketException {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     } on TlsException catch (e) {
-      return Left(CommonFailure('Certificated not valid\n${e.message}'));
+      return const Left(CommonFailure('Certificated not valid\n'));
     } catch (e) {
       return Left(CommonFailure(e.toString()));
     }

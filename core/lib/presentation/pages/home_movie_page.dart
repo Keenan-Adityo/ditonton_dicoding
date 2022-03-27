@@ -32,20 +32,23 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
   void initState() {
     super.initState();
     Future.microtask(() =>
-        BlocProvider.of<PopularMoviesBloc>(context, listen: false)
-            .add(OnFetchPopularMovies()));
+        BlocProvider.of<OnAirTvListBloc>(context, listen: false)
+            .add(OnFetchTVList()));
     Future.microtask(() =>
-        BlocProvider.of<PopularTvBloc>(context, listen: false)
-            .add(OnFetchPopularTV()));
-    Future.microtask(() => BlocProvider.of<TopRatedMoviesBloc>(context)
-        .add(OnFetchTopRatedMovies()));
+        BlocProvider.of<PopularTvListBloc>(context, listen: false)
+            .add(OnFetchTVList()));
     Future.microtask(() =>
-        BlocProvider.of<TopRatedTvBloc>(context).add(OnFetchTopRatedTV()));
-    Future.microtask(() => BlocProvider.of<TvListBloc>(context, listen: false)
-        .add(OnFetchOnAirTv()));
+        BlocProvider.of<TopRatedTvListBloc>(context, listen: false)
+            .add(OnFetchTVList()));
     Future.microtask(() =>
-        BlocProvider.of<MovieListBloc>(context, listen: false)
-            .add(OnFetchNowPlayingMovies()));
+        BlocProvider.of<NowPlayingMovieListBloc>(context, listen: false)
+            .add(OnFetchMovieList()));
+    Future.microtask(() =>
+        BlocProvider.of<PopularMovieListBloc>(context, listen: false)
+            .add(OnFetchMovieList()));
+    Future.microtask(() =>
+        BlocProvider.of<TopRatedMovieListBloc>(context, listen: false)
+            .add(OnFetchMovieList()));
   }
 
   @override
@@ -106,7 +109,7 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                 'Now Playing Movies',
                 style: kHeading6,
               ),
-              BlocBuilder<MovieListBloc, MovieListState>(
+              BlocBuilder<NowPlayingMovieListBloc, MovieListState>(
                 builder: (context, state) {
                   if (state is MovieListLoading) {
                     return const Center(
@@ -124,13 +127,13 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                 onTap: () =>
                     Navigator.pushNamed(context, PopularMoviesPage.routeName),
               ),
-              BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
+              BlocBuilder<PopularMovieListBloc, MovieListState>(
                 builder: (context, state) {
-                  if (state is PopularMoviesLoading) {
+                  if (state is MovieListLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is PopularMoviesHasData) {
+                  } else if (state is MovieListHasData) {
                     return MovieList(state.result);
                   } else {
                     return const Text('Failed');
@@ -142,13 +145,13 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                 onTap: () =>
                     Navigator.pushNamed(context, TopRatedMoviesPage.routeName),
               ),
-              BlocBuilder<TopRatedMoviesBloc, TopRatedMoviesState>(
+              BlocBuilder<TopRatedMovieListBloc, MovieListState>(
                 builder: (context, state) {
-                  if (state is TopRatedMoviesLoading) {
+                  if (state is MovieListLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is TopRatedMoviesHasData) {
+                  } else if (state is MovieListHasData) {
                     return MovieList(state.result);
                   } else {
                     return const Text('Failed');
@@ -159,7 +162,7 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                 'On The Air TV',
                 style: kHeading6,
               ),
-              BlocBuilder<TvListBloc, TvListState>(
+              BlocBuilder<OnAirTvListBloc, TvListState>(
                 builder: (context, state) {
                   if (state is TvListLoading) {
                     return const Center(
@@ -178,13 +181,13 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   Navigator.pushNamed(context, PopularTVPage.routeName);
                 },
               ),
-              BlocBuilder<PopularTvBloc, PopularTvState>(
+              BlocBuilder<PopularTvListBloc, TvListState>(
                 builder: (context, state) {
-                  if (state is PopularTvLoading) {
+                  if (state is TvListLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is PopularTvHasData) {
+                  } else if (state is TvListHasData) {
                     return TVList(state.result);
                   } else {
                     return const Text('Failed');
@@ -197,13 +200,13 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   Navigator.pushNamed(context, TopRatedTVPage.routeName);
                 },
               ),
-              BlocBuilder<TopRatedTvBloc, TopRatedTvState>(
+              BlocBuilder<TopRatedTvListBloc, TvListState>(
                 builder: (context, state) {
-                  if (state is TopRatedTvLoading) {
+                  if (state is TvListLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (state is TopRatedTvHasData) {
+                  } else if (state is TvListHasData) {
                     return TVList(state.result);
                   } else {
                     return const Text('Failed');

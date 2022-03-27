@@ -18,13 +18,16 @@ void main() {
   late MovieRepositoryImpl repository;
   late MockMovieRemoteDataSource mockRemoteDataSource;
   late MockMovieLocalDataSource mockLocalDataSource;
+  late MockNetworkInfo mockNetworkInfo;
 
   setUp(() {
     mockRemoteDataSource = MockMovieRemoteDataSource();
     mockLocalDataSource = MockMovieLocalDataSource();
+    mockNetworkInfo = MockNetworkInfo();
     repository = MovieRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
       localDataSource: mockLocalDataSource,
+      networkInfo: mockNetworkInfo,
     );
   });
 
@@ -70,6 +73,7 @@ void main() {
         'should return remote data when the call to remote data source is successful',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getNowPlayingMovies())
           .thenAnswer((_) async => tMovieModelList);
       // act
@@ -85,6 +89,7 @@ void main() {
         'should return server failure when the call to remote data source is unsuccessful',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getNowPlayingMovies())
           .thenThrow(ServerException());
       // act
@@ -94,18 +99,50 @@ void main() {
       expect(result, equals(const Left(ServerFailure(''))));
     });
 
-    test(
-        'should return connection failure when the device is not connected to internet',
+
+    test('Should return Certification Failure when the fail the ssl pinning',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getNowPlayingMovies())
-          .thenThrow(const SocketException('Failed to connect to the network'));
+          .thenThrow(const TlsException());
       // act
       final result = await repository.getNowPlayingMovies();
       // assert
       verify(mockRemoteDataSource.getNowPlayingMovies());
       expect(result,
-          equals(const Left(ConnectionFailure('Failed to connect to the network'))));
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
+    });
+
+    group('no internet', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test(
+          'should return cached data when device is offline',
+          () async {
+        // arrange
+        when(mockLocalDataSource.getCachedNowPlayingMovies())
+          .thenAnswer((_) async => [testMovieCache]);
+        //act
+        final result = await repository.getNowPlayingMovies();
+        //assert
+        verify(mockLocalDataSource.getCachedNowPlayingMovies());
+        final resultList = result.getOrElse(() => []);
+        expect(resultList, [testMovieFromCache]);
+      });
+
+      test('should return CacheFailure when no cache', () async {
+        // arrange
+        when(mockLocalDataSource.getCachedNowPlayingMovies())
+            .thenThrow(CacheException('No Cache'));
+        // act
+        final result = await repository.getNowPlayingMovies();
+        // assert
+        verify(mockLocalDataSource.getCachedNowPlayingMovies());
+        expect(result, Left(CacheFailure('No Cache')));
+      });
     });
   });
 
@@ -113,6 +150,7 @@ void main() {
     test('should return movie list when call to data source is success',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getPopularMovies())
           .thenAnswer((_) async => tMovieModelList);
       // act
@@ -127,6 +165,7 @@ void main() {
         'should return server failure when call to data source is unsuccessful',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getPopularMovies())
           .thenThrow(ServerException());
       // act
@@ -135,17 +174,48 @@ void main() {
       expect(result, const Left(ServerFailure('')));
     });
 
-    test(
-        'should return connection failure when device is not connected to the internet',
+    test('Should return Certification Failure when the fail the ssl pinning',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getPopularMovies())
-          .thenThrow(const SocketException('Failed to connect to the network'));
+          .thenThrow(const TlsException());
       // act
       final result = await repository.getPopularMovies();
       // assert
-      expect(
-          result, const Left(ConnectionFailure('Failed to connect to the network')));
+      verify(mockRemoteDataSource.getPopularMovies());
+      expect(result,
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
+    });
+    group('no internet', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test(
+          'should return cached data when device is offline',
+          () async {
+        // arrange
+        when(mockLocalDataSource.getCachedPopularMovies())
+          .thenAnswer((_) async => [testMovieCache]);
+        //act
+        final result = await repository.getPopularMovies();
+        //assert
+        verify(mockLocalDataSource.getCachedPopularMovies());
+        final resultList = result.getOrElse(() => []);
+        expect(resultList, [testMovieFromCache]);
+      });
+
+      test('should return CacheFailure when no cache', () async {
+        // arrange
+        when(mockLocalDataSource.getCachedPopularMovies())
+            .thenThrow(CacheException('No Cache'));
+        // act
+        final result = await repository.getPopularMovies();
+        // assert
+        verify(mockLocalDataSource.getCachedPopularMovies());
+        expect(result, Left(CacheFailure('No Cache')));
+      });
     });
   });
 
@@ -153,6 +223,7 @@ void main() {
     test('should return movie list when call to data source is successful',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getTopRatedMovies())
           .thenAnswer((_) async => tMovieModelList);
       // act
@@ -166,6 +237,7 @@ void main() {
     test('should return ServerFailure when call to data source is unsuccessful',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getTopRatedMovies())
           .thenThrow(ServerException());
       // act
@@ -174,17 +246,48 @@ void main() {
       expect(result, const Left(ServerFailure('')));
     });
 
-    test(
-        'should return ConnectionFailure when device is not connected to the internet',
+    test('Should return Certification Failure when the fail the ssl pinning',
         () async {
       // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       when(mockRemoteDataSource.getTopRatedMovies())
-          .thenThrow(const SocketException('Failed to connect to the network'));
+          .thenThrow(const TlsException());
       // act
       final result = await repository.getTopRatedMovies();
       // assert
-      expect(
-          result, const Left(ConnectionFailure('Failed to connect to the network')));
+      verify(mockRemoteDataSource.getTopRatedMovies());
+      expect(result,
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
+    });
+    group('no internet', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test(
+          'should return cached data when device is offline',
+          () async {
+        // arrange
+        when(mockLocalDataSource.getCachedTopRatedMovies())
+          .thenAnswer((_) async => [testMovieCache]);
+        //act
+        final result = await repository.getTopRatedMovies();
+        //assert
+        verify(mockLocalDataSource.getCachedTopRatedMovies());
+        final resultList = result.getOrElse(() => []);
+        expect(resultList, [testMovieFromCache]);
+      });
+
+      test('should return CacheFailure when no cache', () async {
+        // arrange
+        when(mockLocalDataSource.getCachedTopRatedMovies())
+            .thenThrow(CacheException('No Cache'));
+        // act
+        final result = await repository.getTopRatedMovies();
+        // assert
+        verify(mockLocalDataSource.getCachedTopRatedMovies());
+        expect(result, Left(CacheFailure('No Cache')));
+      });
     });
   });
 
@@ -250,8 +353,22 @@ void main() {
       final result = await repository.getMovieDetail(tId);
       // assert
       verify(mockRemoteDataSource.getMovieDetail(tId));
+      expect(
+          result,
+          equals(const Left(
+              ConnectionFailure('Failed to connect to the network'))));
+    });
+    test('Should return Certification Failure when the fail the ssl pinning',
+        () async {
+      // arrange
+      when(mockRemoteDataSource.getMovieDetail(tId))
+          .thenThrow(const TlsException());
+      // act
+      final result = await repository.getMovieDetail(tId);
+      // assert
+      verify(mockRemoteDataSource.getMovieDetail(tId));
       expect(result,
-          equals(const Left(ConnectionFailure('Failed to connect to the network'))));
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
     });
   });
 
@@ -296,8 +413,22 @@ void main() {
       final result = await repository.getMovieRecommendations(tId);
       // assert
       verify(mockRemoteDataSource.getMovieRecommendations(tId));
+      expect(
+          result,
+          equals(const Left(
+              ConnectionFailure('Failed to connect to the network'))));
+    });
+    test('Should return Certification Failure when the fail the ssl pinning',
+        () async {
+      // arrange
+      when(mockRemoteDataSource.getMovieRecommendations(tId))
+          .thenThrow(const TlsException());
+      // act
+      final result = await repository.getMovieRecommendations(tId);
+      // assert
+      verify(mockRemoteDataSource.getMovieRecommendations(tId));
       expect(result,
-          equals(const Left(ConnectionFailure('Failed to connect to the network'))));
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
     });
   });
 
@@ -337,8 +468,21 @@ void main() {
       // act
       final result = await repository.searchMovies(tQuery);
       // assert
-      expect(
-          result, const Left(ConnectionFailure('Failed to connect to the network')));
+      expect(result,
+          const Left(ConnectionFailure('Failed to connect to the network')));
+    });
+
+    test('Should return Certification Failure when the fail the ssl pinning',
+        () async {
+      // arrange
+      when(mockRemoteDataSource.searchMovies(tQuery))
+          .thenThrow(const TlsException());
+      // act
+      final result = await repository.searchMovies(tQuery);
+      // assert
+      verify(mockRemoteDataSource.searchMovies(tQuery));
+      expect(result,
+          equals(const Left(CommonFailure('Certificated not valid\n'))));
     });
   });
 

@@ -18,19 +18,28 @@ class OnFetchTvDetail extends TvDetailEvent {
 }
 
 class OnAddWatchlist extends TvDetailEvent {
-  final TVSeriesDetail movie;
+  final TVSeriesDetail tv;
 
-  const OnAddWatchlist(this.movie);
+  const OnAddWatchlist(this.tv);
 
   @override
-  List<Object?> get props => [movie];
+  List<Object?> get props => [tv];
 }
 
 class OnRemoveWatchlist extends TvDetailEvent {
-  final TVSeriesDetail movie;
+  final TVSeriesDetail tv;
 
-  const OnRemoveWatchlist(this.movie);
+  const OnRemoveWatchlist(this.tv);
 
   @override
-  List<Object?> get props => [movie];
+  List<Object?> get props => [tv];
+}
+
+class OnLoadWatchlistStatus extends TvDetailEvent {
+  final int id;
+
+  const OnLoadWatchlistStatus(this.id);
+
+  @override
+  List<Object> get props => [id];
 }
